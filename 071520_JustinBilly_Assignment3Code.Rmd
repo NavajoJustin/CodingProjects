@@ -1,0 +1,101 @@
+---
+title: "07152020_DataAnalysis_JustinBilly"
+author: "Justin Billy"
+date: "7/15/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#Data
+library(remotes)
+remotes::install_github("allisonhorst/palmerpenguins")
+library(palmerpenguins)
+library(tidyverse)
+
+#Variable class (from lecture)
+class(penguins$sex)
+class(penguins$body_mass_g)
+#Variable class for assignment #3 Prompt 1 (rest of 7 variables listed below) use for group zoom meeting
+#Explanation code: class = what type of data object, penguins$[insert matrix] = "penguins$" designates where the data will be pulled from, "matrix" or column name specificity
+class(penguins$species)
+class(penguins$island)
+class(penguins$bill_length_mm)
+class(penguins$bill_depth_mm)
+class(penguins$flipper_length_mm)
+
+#Variable levels (from lecture)
+levels(penguins$sex)
+#Variable levels for assignment #3 Prompt 1 (rest of 7 variables listed below) use for group zoom meeting
+#Explanation code: "levels" = classification of the data like female vs male, fruit vs vegetable
+levels(penguins$species)
+levels(penguins$island)
+levels(penguins$bill_length_mm)
+levels(penguins$bill_depth_mm)
+levels(penguins$flipper_length_mm)
+levels(penguins$body_mass_g)
+
+#Missing Data (from lecture)
+is.na(penguins)
+is.na(penguins$flipper_length_mm)
+is.na(penguins$sex)
+
+#Analysis with NA value (from lecture)
+penguins %>%
+  group_by(island) %>%
+  summarise(mean(bill_length_mm))
+
+#NA counts bar graph (from lecture)
+penguins %>%
+  #group_by(species) %>%
+  select(everything()) %>%
+  summarise_all(funs(sum(is.na(.)))) %>%
+  pivot_longer(cols = 1:7, names_to = 'columns', values_to = 'NA_count') %>%
+  arrange(desc(NA_count)) %>%
+  ggplot(aes(y = columns, x = NA_count)) + geom_col(fill = '#F0E442') +
+  geom_label(aes(label = NA_count)) +
+  #   scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+  theme_minimal() +
+  labs(title = 'Palmer Penguins NA Count')
+
+#Summary (from lecture)
+summary(penguins)
+#Assignment #3 Prompt 3 Run summary for three variables
+summary(penguins$species)
+summary(penguins$island)
+summary(penguins$bill_length_mm)
+
+
+#Assignment #3 Prompt 2
+#Bar graph counts > colorblind palettes
+penguins %>%
+  count(species) %>%
+  ggplot() + geom_col(aes(x = species, y = n, fill = species)) +
+  geom_label(aes(x = species, y = n, label = n)) +
+  scale_fill_manual(values = c("#009E73","#CC79A7","gray")) +
+  theme_minimal() +
+  labs(title = 'All Accessible Penguin Species Count')
